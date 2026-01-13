@@ -1,47 +1,92 @@
+
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
+import { RouterLink, RouterView } from 'vue-router'
+
+import { useAuth } from './composables/useAuth'
+
+import { useCart } from './composables/useCart'
+
+
+
+const { currentUser, logout } = useAuth()
+
+const { cart } = useCart()
+
 </script>
 
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+
+<template>
+
+  <header>
+
+    <nav>
+
+      <div class="logo">VueStore</div>
+
+      <div class="links">
+
+        <RouterLink to="/shop">Shop</RouterLink>
+
+        <RouterLink to="/cart">Cart ({{ cart.length }})</RouterLink>
+
+        <RouterLink to="/about">About</RouterLink>
+
+        <RouterLink to="/contact">Contact</RouterLink>
+
+      </div>
+
+      <div class="auth">
+
+        <template v-if="!currentUser">
+
+          <RouterLink to="/login">Login</RouterLink>
+
+          <RouterLink to="/register">Register</RouterLink>
+
+        </template>
+
+        <template v-else>
+
+          <RouterLink to="/profile">Profile</RouterLink>
+
+          <button @click="logout" class="logout-btn">Logout</button>
+
+        </template>
+
+      </div>
+
+    </nav>
+
   </header>
 
+
+
   <main>
-    <TheWelcome />
+
+    <RouterView />
+
   </main>
+
 </template>
 
+
+
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+header { background: #333; padding: 1rem; color: white; }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+nav { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.logo { font-weight: bold; font-size: 1.2rem; }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
+.links a, .auth a { color: white; margin-left: 15px; text-decoration: none; }
+
+.links a:hover, .auth a:hover { text-decoration: underline; }
+
+.logout-btn { margin-left: 15px; background: #e74c3c; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+
+main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+
 </style>
