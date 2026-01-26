@@ -1,4 +1,6 @@
 <script setup>
+import AdminLayout from '../components/layout/AdminLayout.vue'
+
 import { ref, onMounted } from 'vue'
 import {
   getCategories,
@@ -46,6 +48,7 @@ onMounted(fetchCategories)
 </script>
 
 <template>
+  <AdminLayout>
   <div class="p-6 max-w-xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Category Management</h1>
 
@@ -90,4 +93,5 @@ onMounted(fetchCategories)
       </li>
     </ul>
   </div>
+  </AdminLayout>
 </template>
