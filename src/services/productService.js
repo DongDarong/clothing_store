@@ -1,6 +1,29 @@
 import api from './api'
 
-export const getProducts = () => api.get('/products')
-export const createProduct = (data) => api.post('/products', data)
-export const updateProduct = (id, data) => api.put(`/products/${id}`, data)
-export const deleteProduct = (id) => api.delete(`/products/${id}`)
+// GET all products
+export const getProducts = () => {
+  return api.get('/products')
+}
+
+// CREATE product (with image)
+export const createProduct = (formData) => {
+  return api.post('/products', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+// UPDATE product (with image)
+export const updateProduct = (id, formData) => {
+  return api.post(`/products/${id}?_method=PUT`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+// DELETE product
+export const deleteProduct = (id) => {
+  return api.delete(`/products/${id}`)
+}

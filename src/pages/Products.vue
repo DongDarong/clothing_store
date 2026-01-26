@@ -10,6 +10,7 @@ import { getCategories } from '../services/categoryService'
 
 const products = ref([])
 const categories = ref([])
+const imageFile = ref(null)
 
 const form = ref({
   id: null,
@@ -21,12 +22,16 @@ const form = ref({
 
 const fetchProducts = async () => {
   const res = await getProducts()
-  products.value = res.data
+  products.value = res.data.data   // ✅ FIX
 }
 
 const fetchCategories = async () => {
   const res = await getCategories()
-  categories.value = res.data
+  categories.value = res.data      // (category API returns array)
+}
+
+const onImageChange = (e) => {
+  imageFile.value = e.target.files[0]
 }
 
 const saveProduct = async () => {
@@ -34,10 +39,20 @@ const saveProduct = async () => {
     return alert('Please fill all required fields')
   }
 
+  const formData = new FormData()
+  formData.append('name', form.value.name)
+  formData.append('price', form.value.price)
+  formData.append('category_id', form.value.category_id)
+  formData.append('description', form.value.description)
+
+  if (imageFile.value) {
+    formData.append('image', imageFile.value)
+  }
+
   if (form.value.id) {
-    await updateProduct(form.value.id, form.value)
+    await updateProduct(form.value.id, formData)
   } else {
-    await createProduct(form.value)
+    await createProduct(formData)
   }
 
   resetForm()
@@ -52,6 +67,7 @@ const editProduct = (p) => {
     category_id: p.category_id,
     description: p.description
   }
+  imageFile.value = null
 }
 
 const removeProduct = async (id) => {
@@ -69,6 +85,7 @@ const resetForm = () => {
     category_id: '',
     description: ''
   }
+  imageFile.value = null
 }
 
 onMounted(() => {
@@ -83,29 +100,12 @@ onMounted(() => {
 
     <!-- Form -->
     <div class="grid grid-cols-2 gap-4 mb-6">
-      <input
-        v-model="form.name"
-        placeholder="Product name"
-        class="border p-2 rounded"
-      />
+      <input v-model="form.name" placeholder="Product name" class="border p-2 rounded" />
+      <input v-model="form.price" type="number" placeholder="Price" class="border p-2 rounded" />
 
-      <input
-        v-model="form.price"
-        type="number"
-        placeholder="Price"
-        class="border p-2 rounded"
-      />
-
-      <select
-        v-model="form.category_id"
-        class="border p-2 rounded col-span-2"
-      >
+      <select v-model="form.category_id" class="border p-2 rounded col-span-2">
         <option value="">Select Category</option>
-        <option
-          v-for="c in categories"
-          :key="c.id"
-          :value="c.id"
-        >
+        <option v-for="c in categories" :key="c.id" :value="c.id">
           {{ c.name }}
         </option>
       </select>
@@ -115,6 +115,13 @@ onMounted(() => {
         placeholder="Description"
         class="border p-2 rounded col-span-2"
       ></textarea>
+
+      <!-- Image upload -->
+      <input
+        type="file"
+        @change="onImageChange"
+        class="border p-2 rounded col-span-2"
+      />
 
       <button
         @click="saveProduct"
@@ -128,6 +135,7 @@ onMounted(() => {
     <table class="w-full border">
       <thead class="bg-gray-100">
         <tr>
+          <th class="border p-2">Image</th>
           <th class="border p-2">Name</th>
           <th class="border p-2">Price</th>
           <th class="border p-2">Category</th>
@@ -136,22 +144,19 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr v-for="p in products" :key="p.id">
+          <td class="border p-2">
+            <img
+              v-if="p.image"
+              :src="`http://127.0.0.1:8000/storage/${p.image}`"
+              class="w-16 h-16 object-cover"
+            />
+          </td>
           <td class="border p-2">{{ p.name }}</td>
           <td class="border p-2">${{ p.price }}</td>
           <td class="border p-2">{{ p.category?.name }}</td>
           <td class="border p-2">
-            <button
-              @click="editProduct(p)"
-              class="text-blue-600 mr-2"
-            >
-              Edit
-            </button>
-            <button
-              @click="removeProduct(p.id)"
-              class="text-red-600"
-            >
-              Delete
-            </button>
+            <button @click="editProduct(p)" class="text-blue-600 mr-2">Edit</button>
+            <button @click="removeProduct(p.id)" class="text-red-600">Delete</button>
           </td>
         </tr>
       </tbody>
