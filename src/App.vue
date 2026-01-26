@@ -1,7 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <h1 class="text-3xl font-bold text-blue-600">
-      Clothing Store Web
-    </h1>
+  <div>
+    <nav class="bg-blue-600 text-white p-4 flex gap-4">
+      <router-link to="/" class="hover:underline">Home</router-link>
+      <router-link to="/categories" class="hover:underline">Categories</router-link>
+      <router-link to="/products" class="hover:underline">Products</router-link>
+    </nav>
+
+    <router-view />
   </div>
 </template>
