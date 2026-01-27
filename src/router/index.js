@@ -5,6 +5,8 @@ import Home from '../pages/Home.vue'
 import Categories from '../pages/Categories.vue'
 import Products from '../pages/Products.vue'
 import Login from '../pages/Login.vue'
+import Profile from '../pages/Profile.vue'
+
 
 const routes = [
   {
@@ -29,7 +31,13 @@ const routes = [
     name: 'Products',
     component: Products,
     meta: { requiresAuth: true }
-  }
+  },
+  {
+  path: '/profile',
+  name: 'Profile',
+  component: Profile,
+  meta: { requiresAuth: true }
+}
 ]
 
 const router = createRouter({
