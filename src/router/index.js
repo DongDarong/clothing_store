@@ -6,7 +6,7 @@ import Categories from '../pages/Categories.vue'
 import Products from '../pages/Products.vue'
 import Login from '../pages/Login.vue'
 import Profile from '../pages/Profile.vue'
-
+import Users from '../pages/Users.vue'
 
 const routes = [
   {
@@ -36,6 +36,12 @@ const routes = [
   path: '/profile',
   name: 'Profile',
   component: Profile,
+  meta: { requiresAuth: true }
+},
+{
+  path: '/users',
+  name: 'Users',
+  component: Users,
   meta: { requiresAuth: true }
 }
 ]
